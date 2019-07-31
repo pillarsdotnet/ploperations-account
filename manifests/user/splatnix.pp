@@ -10,8 +10,8 @@ define account::user::splatnix (
   Optional[String[1]]        $home_source_module = undef,
   Optional[Integer[1]]       $uid                = undef,
   Boolean                    $usekey             = true,
-  Optional[Ssh::Key::String] $key                = undef,
-  Ssh::Key::Type             $keytype            = 'ssh-rsa',
+  Optional[Stdlib::Base64]   $key                = undef,
+  Account::SshKeyType        $keytype            = 'ssh-rsa',
   Optional[Account::Date]    $expire             = undef,
   Optional[Sensitive]        $password           = undef,
 ) {

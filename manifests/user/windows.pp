@@ -6,8 +6,8 @@ define account::user::windows (
   Optional[String[1]]        $group    = undef,
   Optional[String]           $comment  = undef,
   Optional[Sensitive]        $password = undef,
-  Optional[Ssh::Key::String] $key      = undef,
-  Ssh::Key::Type             $keytype  = 'ssh-rsa',
+  Optional[Stdlib::Base64]   $key      = undef,
+  Account::SshKeyType        $keytype  = 'ssh-rsa',
   Optional[Account::Date]    $expire   = undef,
 ) {
   include account

@@ -2,14 +2,14 @@
 #
 # @param ensure
 #   Whether to ensure the user is present or absent on the node.
+# @param comment
+#   Comment field for the user. This is generally the user's name.
+# @param expire
+#   When the user account expires in YYYY-MM-DD format.
 # @param group
 #   Primary group for the user.
 # @param groups
 #   Secondary groups for the user. There is no distinction on Windows.
-# @param comment
-#   Comment field for the user. This is generally the user's name.
-# @param shell
-#   Full path to the user's preferred shell. This does nothing on Windows.
 # @param home
 #   Full path to the user's home directory. This does nothing on Windows.
 # @param home_source_module
@@ -19,31 +19,20 @@
 #
 #   The module is expected to have a directory named after the user at the top
 #   level that contains the user's files. For example, pass `profile/users`,
-#   then create a `site/profile/files/luke/.bashrc` file.
+#   then create a `site/profile/files/users/luke/.bashrc` file.
 #
 #   This does nothing on Windows.
-# @param uid
-#   User id number for the user. This does nothing on Windows.
-# @param usekey
-#   Whether or not to manage SSH keys for the user. If this is false, then keys
-#   will not be added or removed.
-#
-#   You can still set up keys externally if `$usekey` is false.
-#
-#   This doesn't do anything on Windows; it is effectively always true.
 # @param key
 #   SSH public key. This must not contain the type or the comment — it's just
 #   the second part, after ssh-rsa or whatever your keytype is.
 # @param keytype
 #   The type of your SSH key.
-# @param expire
-#   When the user account expires in YYYY-MM-DD format.
 # @param password
 #   A password for the user. If this is left undefined, you will simply not be
 #   able to use password authentication on splatnix (*nix: Linux, BSD, macOS,
 #   and Solaris).
 #
-#   You may specify this in hiera under `account::user` parameter. See the
+#   You may specify this in hiera under `account::users` parameter. See the
 #   [Passwords section in README.md](https://github.com/ploperations/ploperations-account/blob/master/README.md#passwords).
 #
 #   Windows requires passwords. If it is not specified here or in hiera, this
@@ -58,36 +47,41 @@
 #
 #   See the
 #   [Shared accounts section in README.md](https://github.com/ploperations/ploperations-account/blob/master/README.md#shared-accounts).
+# @param shell
+#   Full path to the user's preferred shell. This does nothing on Windows.
+# @param uid
+#   User id number for the user. This does nothing on Windows.
+# @param usekey
+#   Whether or not to manage SSH keys for the user. If this is false, then keys
+#   will not be added or removed.
+#
+#   You can still set up keys externally if `$usekey` is false.
+#
+#   This doesn't do anything on Windows; it is effectively always true.
 define account::user (
   Enum['present', 'absent']  $ensure             = 'present',
-  Optional[String[1]]        $group              = undef,
-  Array[String[1]]           $groups             = [],
   Optional[String]           $comment            = undef,
-  Stdlib::Unixpath           $shell              = '/bin/bash',
+  Optional[Account::Date]    $expire             = undef,
+  Optional[Account::Name]    $group              = undef,
+  Array[Account::Name]       $groups             = [],
   Optional[Stdlib::Unixpath] $home               = undef,
   Optional[String[1]]        $home_source_module = undef,
-  Optional[Integer[1]]       $uid                = undef,
-  Boolean                    $usekey             = true,
-  Optional[Ssh::Key::String] $key                = undef,
-  Ssh::Key::Type             $keytype            = 'ssh-rsa',
-  Optional[Account::Date]    $expire             = undef,
+  Optional[Stdlib::Base64]   $key                = undef,
+  Account::SshKeyType        $keytype            = 'ssh-rsa',
   Optional[Sensitive]        $password           = undef,
   Array[String[1]]           $shared_accounts    = [],
+  Stdlib::Unixpath           $shell              = '/bin/bash',
+  Optional[Integer[1]]       $uid                = undef,
+  Boolean                    $usekey             = true,
 ) {
   include account
 
   if $password {
     $_password = $password
   } else {
-    $hiera_accounts = lookup({
-      name          => 'account::user',
-      value_type    => Hash[String[1], Hash],
-      default_value => {},
-    })
-
     $_password_raw = $facts['os']['family'] ? {
-      'windows' => $hiera_accounts.dig($title, 'windows_password'),
-      default   => $hiera_accounts.dig($title, 'crypted_password'),
+      'windows' => $account::users.dig($title, 'windows_password'),
+      default   => $account::users.dig($title, 'crypted_password'),
     }
 
     $_password = $_password_raw ? {

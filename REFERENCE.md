@@ -240,7 +240,7 @@ Default value: `true`
 
 ##### `key`
 
-Data type: `Optional[Ssh::Key::String]`
+Data type: `Optional[Stdlib::Base64]`
 
 SSH public key. This must not contain the type or the comment — it's just
 the second part, after ssh-rsa or whatever your keytype is.

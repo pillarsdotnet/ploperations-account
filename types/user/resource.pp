@@ -1,7 +1,6 @@
 type Account::User::Resource = Struct[
   { Optional[ensure]                   => Enum['absent','present'],
     Optional[comment]                  => String,
-    Optional[crypted_password]         => String,
     Optional[expire]                   => Account::Date,
     Optional[group]                    => Account::Name,
     Optional[groups]                   => Array[Account::Name],
@@ -9,7 +8,7 @@ type Account::User::Resource = Struct[
     Optional[home_source_module]       => String[1],
     Optional[key]                      => Stdlib::Base64,
     Optional[keytype]                  => Account::SshKeyType,
-    Optional[windows_password]         => String,
+    Optional[password]                 => Sensitive[String],
     Optional[shared_accounts]          => Array[Account::Name],
     Optional[shell]                    => Stdlib::Unixpath,
     Optional[uid]                      => Account::Id,

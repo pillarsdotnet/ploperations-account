@@ -23,6 +23,12 @@ class account (
   Account::Group::Hash     $groups                 = {},
   Account::User::Hash      $users                  = {},
 ) {
+  notify { 'creating groups':
+    message => 'Creating virtual groups %s'.sprintf($groups.keys.join(', ')),
+  }
   ensure_resources('@group',         $groups)
+  notify { 'creating users':
+    message => 'Creating virtual users %s'.sprintf($users.keys.join(', ')),
+  }
   ensure_resources('@account::user', $users,  $defaults)
 }

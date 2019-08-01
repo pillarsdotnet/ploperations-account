@@ -59,20 +59,20 @@
 #
 #   This doesn't do anything on Windows; it is effectively always true.
 define account::user (
-  Enum['present', 'absent']  $ensure             = 'present',
-  Optional[String]           $comment            = undef,
-  Optional[Account::Date]    $expire             = undef,
-  Optional[Account::Name]    $group              = undef,
-  Array[Account::Name]       $groups             = [],
-  Optional[Stdlib::Unixpath] $home               = undef,
-  Optional[String[1]]        $home_source_module = undef,
-  Optional[Stdlib::Base64]   $key                = undef,
-  Account::SshKeyType        $keytype            = 'ssh-rsa',
-  Optional[Sensitive]        $password           = undef,
-  Array[String[1]]           $shared_accounts    = [],
-  Stdlib::Unixpath           $shell              = '/bin/bash',
-  Optional[Integer[1]]       $uid                = undef,
-  Boolean                    $usekey             = true,
+  Enum['present', 'absent']   $ensure             = 'present',
+  Optional[String]            $comment            = undef,
+  Optional[Account::Date]     $expire             = undef,
+  Optional[Account::Name]     $group              = undef,
+  Array[Account::Name]        $groups             = [],
+  Optional[Stdlib::Unixpath]  $home               = undef,
+  Optional[String[1]]         $home_source_module = undef,
+  Optional[Stdlib::Base64]    $key                = undef,
+  Account::SshKeyType         $keytype            = 'ssh-rsa',
+  Optional[Sensitive[String]] $password           = undef,
+  Array[String[1]]            $shared_accounts    = [],
+  Stdlib::Unixpath            $shell              = '/bin/bash',
+  Optional[Integer[1]]        $uid                = undef,
+  Boolean                     $usekey             = true,
 ) {
   include account
 

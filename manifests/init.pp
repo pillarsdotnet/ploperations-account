@@ -8,13 +8,11 @@
 #   Whether or not to use Cygwin on Windows. This defaults to the value of
 #   `cygwin::enable` in hiera, which is where you should set it. (It, in turn,
 #   defaults to `false`.)
-# @param group_defaults
-#   A hash of default values for all groups.
-# @param group_hash
+# @param groups
 #   A hash of groups to be virtualized.
-# @param user_defaults
+# @param defaults
 #   A hash of default values for all users.
-# @param user_hash
+# @param users
 #   A hash of users to be virtualized.
 class account (
   Array[String[1]]         $common_shared_accounts = [],
